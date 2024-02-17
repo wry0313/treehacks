@@ -74,6 +74,7 @@ export default function UploadPage() {
 
   const handleUploadClick = async () => {
     if (selectedImage) {
+      toast.success("Uploading file...");
       //   mutate(selectedImage); // Upload the file when the button is clicked
       const postUrl = await generateUploadUrl();
       const result = await fetch(postUrl, {
@@ -87,7 +88,7 @@ export default function UploadPage() {
         // throw new Error(`Upload failed: ${JSON.stringify(json)}`);
       }
       const { storageId } = json;
-
+      toast.success(`Upload successful: ${storageId}`); 
       console.log(storageId);
     //   await sendImage({ storageId, author: name });
     }

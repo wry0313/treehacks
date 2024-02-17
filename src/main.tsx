@@ -2,7 +2,7 @@
 
 import { createRoot } from "react-dom/client";
 import { Routes } from "@generouted/react-router";
-
+import "./index.css";
 import { ClerkProvider, useAuth } from "@clerk/clerk-react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ConvexReactClient } from "convex/react";
