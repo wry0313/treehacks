@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 
 const BACKEND_IP = "http://127.0.0.1:5000";
 
-export default function Page() {
+export default function HomePage() {
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the selected file
   const [imagePreview, setImagePreview] = useState<string | null>(null); // State to hold image preview URL
