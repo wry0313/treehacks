@@ -6,7 +6,7 @@ export default defineSchema({
     text: v.string(),
     isCompleted: v.boolean(),
   }),
-  documents: defineTable({
+  notes: defineTable({
     title: v.string(),
     content: v.string(),
     userId: v.string(),
@@ -15,5 +15,9 @@ export default defineSchema({
   users: defineTable({
     name: v.string(),
     email: v.string(),
+  }),
+  noteImages: defineTable({
+    noteId: v.string(),
+    imageUrl: v.string(),
   }),
 });

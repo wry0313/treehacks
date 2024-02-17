@@ -1,21 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
-import { ConvexReactClient } from "convex/react";
+// src/main.tsx
+
+import { createRoot } from "react-dom/client";
+import { Routes } from "@generouted/react-router";
+
 import { ClerkProvider, useAuth } from "@clerk/clerk-react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
-
+import { ConvexReactClient } from "convex/react";
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <ClerkProvider
-      publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string}
-    >
-      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-        <App />
-      </ConvexProviderWithClerk>
-    </ClerkProvider>
-  </React.StrictMode>
+createRoot(document.getElementById("root")!).render(
+  <ClerkProvider
+    publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string}
+  >
+    <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+      <Routes />
+    </ConvexProviderWithClerk>
+  </ClerkProvider>
 );
