@@ -7,7 +7,7 @@ import { api } from "../convex/_generated/api";
 const BACKEND_IP = "http://127.0.0.1:5000";
 
 export default function HomePage() {
-  const tasks = useQuery(api.task.get);
+  const tasks = useQuery(api.tasks.get);
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the selected file
   const [imagePreview, setImagePreview] = useState<string | null>(null); // State to hold image preview URL
