@@ -1,10 +1,13 @@
+import { useQuery } from "convex/react";
 import { useState, DragEvent, useRef } from "react";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
+import { api } from "../convex/_generated/api";
 
 const BACKEND_IP = "http://127.0.0.1:5000";
 
 export default function HomePage() {
+  const tasks = useQuery(api.task.get);
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the selected file
   const [imagePreview, setImagePreview] = useState<string | null>(null); // State to hold image preview URL
@@ -87,6 +90,9 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col items-center">
+      {tasks?.map(({ _id, text }) => (
+        <div key={_id}>{text}</div>
+      ))}
       <input
         type="file"
         ref={fileInputRef}
