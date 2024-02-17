@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Toaster } from "react-hot-toast";
-import Home from "./Home";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./Home";
+import UploadPage from "./Upload";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -10,17 +12,17 @@ const queryClient = new QueryClient({
   },
 });
 
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster />
-      <Home />
-      {/* <Router>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/upload" element={<UploadExcel />} />
+          <Route path="/upload" element={<UploadPage />} />
         </Routes>
-      </Router> */}
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }
