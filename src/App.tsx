@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./Home";
+import UploadPage from "./Upload";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,7 +20,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          {/* <Route path="/upload" element={<UploadExcel />} /> */}
+          <Route path="/upload" element={<UploadPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
