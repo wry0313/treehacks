@@ -62,3 +62,65 @@ The sender, Alice, takes the recipient's public key (N, e) and the message M, wh
 Decryption: The recipient, Bob, uses his private key d to compute m ≡ c^d (mod N). Since m is the original message, Bob successfully retrieves M from m.
 
 Security: The security of RSA relies on the difficulty of factoring the large number N back into its prime components p and q. Without the knowledge of p and q, an attacker cannot compute the private key d from the public key (N, e). RSA's encryption and decryption work because of the mathematical property that (m^e)^d ≡ m (mod N) for all messages m, assuming m < N.
+
+Hall's Marriage Theorem: A condition that guarantees a perfect matching in bipartite graphs, stating that for every subset of one part, the number of neighbors is at least as large as the subset.
+
+Tutte's Theorem: Generalizes Hall's theorem for non-bipartite graphs, providing conditions under which a graph contains a perfect matching.
+
+König's Theorem: Establishes a relationship between the size of a minimum vertex cover and the size of a maximum matching in bipartite graphs.
+
+Dijkstra's Algorithm: A graph search algorithm that solves the shortest path problem for a graph with non-negative edge weights, producing a shortest path tree.
+
+Ford-Fulkerson Algorithm: A method to compute the maximum flow in a flow network, illustrating the relationship between maximum flow and minimum cut in a network.
+
+Ramsey's Theorem: States that for any given integers r and s, there exists a minimum integer N such that any graph of order N will contain either a complete subgraph of order r or an independent set of order s.
+
+Van der Waerden's Theorem: Focuses on arithmetic progressions, stating that for any given positive integers k and l, there exists a minimum integer N such that any l-coloring of the set {1, 2, ..., N} contains at least one monochromatic arithmetic progression of length k.
+
+Block Design Theory: Studies the arrangement of elements into subsets (blocks) such that the arrangement satisfies specific balance and symmetry properties.
+
+Latin Squares and Orthogonal Arrays: Discusses the properties of Latin squares, including their construction and application in statistical experiments to control for two nuisance variables.
+
+Diffie-Hellman Key Exchange: A method allowing two parties to jointly establish a shared secret over an insecure channel, foundational for secure communications.
+
+Elliptic Curve Cryptography (ECC): Offers a form of public-key cryptography based on the algebraic structure of elliptic curves over finite fields, providing the same level of security with smaller keys compared to traditional methods like RSA.
+
+P vs NP Problem: Discusses the major unsolved problem in computer science, questioning whether every problem whose solution can be quickly verified by a computer can also be quickly solved by a computer.
+
+Cook-Levin Theorem: Proves that the Boolean satisfiability problem (SAT) is NP-complete, implying that if an efficient (polynomial-time) algorithm exists for SAT, then efficient algorithms exist for all problems in NP.
+
+Fermat's Little Theorem: Provides a basis for determining if a number is prime and is foundational for algorithms in cryptography, stating that if p is a prime and a is any integer not divisible by p, then a^(p-1) ≡ 1 mod p.
+
+Chinese Remainder Theorem: Offers a method to solve systems of simultaneous linear congruences with pairwise coprime moduli, with applications in cryptography, coding theory, and algorithm design.
+
+Menger's Theorem: Provides a fundamental connection between the maximum number of disjoint paths between two vertices and the minimum number of vertices needed to separate them, crucial for network reliability analysis.
+
+Erdős-Rényi Model: A model for generating random graphs, specifying the behavior and properties of networks under random formation, foundational in the study of network theory.
+
+Lovász Local Lemma: A powerful tool in probabilistic combinatorics for showing the existence of graph colorings and other structures under specific conditions, even when direct construction is difficult.
+
+Brouwer's Fixed Point Theorem: States that any continuous function from a compact convex set to itself has at least one fixed point, applicable in game theory, economics, and topology.
+
+Burnside's Lemma (Counting Lemma): Provides a method for counting the number of orbits in a group action on a set, facilitating the enumeration of combinatorial objects up to symmetry.
+
+Sperner's Lemma: An important result in combinatorial topology, asserting that every Sperner labeled simplicial subdivision of a simplex contains a cell whose vertices are labeled with a complete set of labels.
+
+Dilworth's Theorem: In poset theory, states that in any finite partially ordered set, the maximum number of elements in any antichain equals the minimum number of chains in a partition of the set.
+
+Schur's Lemma: A key result in representation theory of groups, stating that any homomorphism between simple modules over a ring is either zero or an isomorphism, crucial for the study of module structure.
+
+Turán's Theorem: Provides a formula for the maximum number of edges in a graph without containing a complete graph of a given size, significant in extremal graph theory.
+
+Kuratowski's Theorem: Characterizes planar graphs as those that do not contain a subgraph that is a subdivision of either K5 (the complete graph on five vertices) or K3,3 (the complete bipartite graph on six vertices, three of which connect to each of the other three), foundational in graph drawing and topology.
+
+Cantor's Diagonal Argument: A proof method demonstrating that the real numbers are uncountable, highlighting the existence of different sizes of infinity in set theory.
+
+Hales-Jewett Theorem: A fundamental result in Ramsey theory concerning combinatorial lines in grids, with implications for algebra and game theory.
+
+Myhill-Nerode Theorem: Relates to formal languages and automata theory, providing a characterization of regular languages in terms of equivalence relations on strings.
+
+Green's Theorem: Offers a relation between a line integral around a simple closed curve C and a double integral over the plane region D bounded by C, applied in various areas of mathematics including fluid dynamics and electromagnetism.
+
+Jordan Curve Theorem: A theorem in topology stating that every simple closed curve in the plane divides the plane into exactly two regions: an "inside" and an "outside," fundamental in planar topology and geometric analysis.
+
+
