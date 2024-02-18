@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ForceGraph2D } from 'react-force-graph';
 
 type AdjacencyList = {
@@ -90,7 +90,7 @@ const Graph: React.FC<GraphProps> = ({ adjacencyList }) => {
       height={1000} // Set the height
       nodeAutoColorBy="id"
       linkDirectionalParticles="value"
-      linkDirectionalParticleSpeed={d => 0.001}
+      linkDirectionalParticleSpeed={0.001}
       nodeCanvasObject={(node, ctx, globalScale) => {
         if (typeof node.x === 'number' && typeof node.y === 'number') {
           const label = node.id;

@@ -6,7 +6,11 @@ import { mutation, query } from "./_generated/server";
 // });
 
 export const insertLatexPdf = mutation({
-  args: { noteId: v.string(), latexpdfStorageId: v.id("_storage"), latextString: v.string()},
+  args: {
+    noteId: v.id("notes"),
+    latexpdfStorageId: v.id("_storage"),
+    latextString: v.string(),
+  },
   handler: async (ctx, args) => {
     const id = await ctx.db.insert("noteLatexPdf", {
       noteId: args.noteId,
@@ -34,7 +38,7 @@ export const insertLatexPdf = mutation({
 // });
 
 export const getLatexPdfByNoteId = query({
-  args: { noteId: v.string() },
+  args: { noteId: v.id("notes") },
   handler: async (ctx, args) => {
     const pdf = await ctx.db
       .query("noteLatexPdf")
@@ -46,5 +50,17 @@ export const getLatexPdfByNoteId = query({
       return url;
     });
     return Promise.all(res);
+  },
+});
+
+export const getStringLatexByNoteId = query({
+  args: { noteId: v.id("notes") },
+  handler: async (ctx, args) => {
+    const pdf = await ctx.db
+      .query("noteLatexPdf")
+      .withIndex("by_noteId", (q) => q.eq("noteId", args.noteId))
+      .collect();
+
+    return pdf;
   },
 });

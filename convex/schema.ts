@@ -22,7 +22,7 @@ export default defineSchema({
     processingStatus: v.string(),
   }).index("by_noteId", ["noteId"]).index("by_imageStorageId", ["imageStorageId"]),
   noteLatexPdf: defineTable({
-    noteId: v.string(),
+    noteId: v.id("notes"),
     latexStorageId: v.id("_storage"),
     latextString: v.string(),
   }).index("by_noteId", ["noteId"]),

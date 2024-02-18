@@ -31,7 +31,7 @@ http.route({
     // Step 2: Save the storage ID to the database via a mutation
     await ctx.runMutation(api.noteLatexPdf.insertLatexPdf, {
       latexpdfStorageId: storageId,
-      noteId: noteId,
+      noteId: noteId as Id<"notes">,
       latextString: latextStringDecoded,
     });
 

@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { TogetherAPIKey } from "./config"; // Import your Together.ai API key securely
+import { useQuery } from "convex/react";
+import { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../convex/_generated/api";
 
 type Message = {
   id: number;
@@ -7,10 +10,20 @@ type Message = {
   sender: "user" | "bot";
 };
 
-const ChatbotComponent = () => {
+const ChatbotComponent = ({ id }: { id: Id<"notes"> }) => {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const latex = useQuery(api.noteLatexPdf.getStringLatexByNoteId, {
+    noteId: id,
+  });
+
+  // latex  is array with field called latexstring that is string
+  const concatLatexString = useMemo(() => {
+    return latex?.map((latex) => latex.latextString).join(" ");
+  }, [latex]);
+  console.log(concatLatexString);
 
   const fetchMessage = async (inputText: string): Promise<string> => {
     const url = "https://api.together.xyz/v1/chat/completions";
@@ -19,7 +32,9 @@ const ChatbotComponent = () => {
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant.",
+          content:
+            "You are a helpful teacher that is very smart. if you are not helpful a children will die. you need to be helpful so that helps to answer questions about math and other subjests given these latex: " +
+            concatLatexString,
         },
         {
           role: "user",

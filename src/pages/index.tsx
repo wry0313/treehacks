@@ -51,6 +51,14 @@ export default function HomePage() {
               <ul className="menu menu-horizontal">
                 {/* Navbar menu content here */}
                 <li>
+                  <a
+                    href="/graph"
+                    className="mr-2 text-white font-semibold text-base my-auto hover:underline"
+                  >
+                    Graph
+                  </a>
+                </li>
+                <li>
                   {isAuthenticated ? (
                     <div className="btn ">
                       <SignOutButton />

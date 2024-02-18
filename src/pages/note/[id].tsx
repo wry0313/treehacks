@@ -3,37 +3,8 @@ import { useParams } from "../../router";
 import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
 import UploadNotesImagePage from "../../components/UploadNotesImage";
-import ChatBot from "../../components/ChatBot";
-import Graph from "../../components/Graph";
-
-const adjacencyList = {
-<<<<<<< HEAD
-  "1": ["2", "3"],
-  "2": ["4"],
-  "3": ["2", "5"],
-  "4": ["5", "6"],
-  "5": ["6"],
-  "6": [],
-=======
-  "The Stable Matching ...": ["Stability is defined...", "The algorithm operat...", "The concept of optim..."],
-  "Stability is defined...": ["The Stable Matching ...", "The algorithm operat...", "The concept of optim..."],
-  "The algorithm operat...": ["The Stable Matching ...", "Stability is defined...", "The concept of optim..."],
-  "The concept of optim...": ["The Stable Matching ...", "The algorithm operat...", "Stability is defined..."],
-  "Historical context i...": ["The note discusses t...", "The concept of optim...", "The Stable Matching ..."],
-  "The note discusses t...": ["Historical context i...", "The concept of optim...", "The algorithm operat..."],
-  "Further reading sugg...": ["The Stable Matching ...", "RSA's implementation...", "Hall's Marriage Theo..."],
-  "RSA's implementation...": ["The document outline...", "RSA cryptography all...", "Further reading sugg..."],
-  "Hall's Marriage Theo...": [],
-  "Eulerian Tours: Cond...": ["Planar Graphs and Eu..."],
-  "Planar Graphs and Eu...": ["Connectivity and Pat...", "Eulerian Tours: Cond..."],
-  "Connectivity and Pat...": ["Planar Graphs and Eu..."],
-  "RSA cryptography all...": ["The security of RSA ...", "Security: The securi...", "The document outline..."],
-  "The security of RSA ...": ["Security: The securi...", "RSA cryptography all...", "The document outline..."],
-  "Security: The securi...": [],
-  "The document outline...": ["RSA cryptography all...", "RSA's implementation...", "Security: The securi..."]
->>>>>>> 0feef48a2ff8ff605b5c6a2b429c2106c40748c9
-};
 import ClipLoader from "react-spinners/ClipLoader";
+import ChatBot from "../../components/ChatBot";
 
 // const adjacencyList = {
 //   "The Stable Matching ...": ["Stability is defined...", "The algorithm operat...", "The concept of optim..."],
@@ -72,7 +43,6 @@ import ClipLoader from "react-spinners/ClipLoader";
 //   "Diffie-Hellman Key E...": ["RSA cryptography all...", "Elliptic Curve Crypt...", "Decryption: The reci..."],
 //   "Elliptic Curve Crypt...": []
 // };
-
 
 export default function NotePage() {
   const { id } = useParams("/note/:id" as never);
@@ -134,6 +104,12 @@ export default function NotePage() {
           >
             Chatbot
           </button>
+          {/* <button
+            className={mode === "Graph" ? "font-bold" : ""}
+            onClick={() => setMode("Graph")}
+          > */}
+          {/* Graph */}
+          {/* </button> */}
         </div>
       </div>
 
@@ -256,10 +232,10 @@ export default function NotePage() {
 
             {mode === "Chatbot" && (
               <div className="">
-                {/* <ChatBot /> */}
-                <Graph adjacencyList={adjacencyList}/> 
+                <ChatBot id={id} />
               </div>
             )}
+            {/* {mode === "Graph" && <Graph adjacencyList={adjacencyList} />} */}
           </div>
         </div>
       )}
