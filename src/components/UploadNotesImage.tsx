@@ -102,7 +102,7 @@ export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center pt-10">
       <input
         type="file"
         ref={fileInputRef}
@@ -114,7 +114,7 @@ export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`border-4 border-dashed flex px-4 rounded-lg items-center justify-center h-[250px] text-center cursor-pointer ${
+        className={`border-4 border-dashed flex px-4 rounded-lg items-center justify-center h-[250px] w-1/3 text-center cursor-pointer ${
           dragOver ? "border-black" : "border-gray-300"
         } ${selectedImage ? "border-green-800" : "bg-white"}`}
       >
@@ -134,7 +134,7 @@ export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
       </div>
       <button
         onClick={handleUploadClick}
-        className="w-40 mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="w-1/3 mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-10 rounded"
       >
         Upload
       </button>

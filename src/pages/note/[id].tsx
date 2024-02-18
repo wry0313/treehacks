@@ -55,7 +55,7 @@ export default function NotePage() {
             className={mode === "Chatbot" ? "font-bold" : ""}
             onClick={() => setMode("Chatbot")}
           >
-            Chat with your work
+            Chatbot
           </button>
         </div>
       </div>
