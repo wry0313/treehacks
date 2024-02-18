@@ -203,7 +203,6 @@ export default function NotePage() {
             {mode === "Chatbot" && (
               <div className="">
                 {/* <ChatBot /> */}
-                {/* <ChatBot/> */}
                 <Graph adjacencyList={adjacencyList}/> 
               </div>
             )}
