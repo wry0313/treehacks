@@ -14,7 +14,7 @@ TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
-def queryText(input = "What is 1 + 1", context = "You are an AI Assistant"):
+def getChat(input = "What is 1 + 1", context = "You are an AI Assistant"):
     client = OpenAI(api_key=TOGETHER_API_KEY,
     base_url='https://api.together.xyz',
     )
@@ -36,5 +36,15 @@ def queryText(input = "What is 1 + 1", context = "You are an AI Assistant"):
 
     return chat_completion.choices[0].message.content
 
+print("Hi, is there anything you would like to modify about your pdf file?")
 
-print(queryText(input="Hello! whats your name. Give me an apple"))
+prev_chat = input()
+res = getChat(prev_chat)
+print(res)
+prev_chat += res
+
+while(True):
+    next_chat = input()
+    res = getChat(next_chat, prev_chat)
+    print(res)
+    prev_chat += res
