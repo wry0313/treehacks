@@ -95,7 +95,7 @@ def image_to_text(image_path):
             {
             "type": "text",            
 
-            "text": "This is an image of a student's notes. Transcribe it into latex code. This should compile as a pdf file later. Do not output anything except for the transcribed latex!"
+            "text": "This is an image of a student's notes. Transcribe it into latex code. Have a one-line gap between each line. This should compile as a pdf file later. Do not output anything except for the transcribed latex!"
             },
             {
             "type": "image_url",
@@ -173,22 +173,39 @@ print(processed_image_path)
 extracted_latex = image_to_text(processed_image_path)
 print(extracted_latex)
 
+def generate_text(prompt):
+    # Generate text using GPT-4
+    response = openai.Completion.create(
+        engine="GPT-4",
+        prompt=prompt,
+        max_tokens=500
+    )
+    result = response.choices[0].text.strip()
+
+if __name__ == "__main__":
+    main()
+
 def correctLatex(S):
-    cnt = 0
+    return generate_text('Correct any errors in the following LaTeX script:\n' + S)
+    # cnt = 0
     
-    for i in range(len(S)):
-        if(S[i] == '$'):
-            cnt += 1
+    # for i in range(len(S)):
+    #     if(S[i] == '$'):
+    #         cnt += 1
         
-    if cnt % 2 == 1:
-        S += 1
+    # if cnt % 2 == 1:
+    #     S += 1
     
-    if "\end{document}" not in S:
-        S += "\end{document}"
+    # if "\end{document}" not in S:
+    #     S += "\end{document}"
     
-    return S
-    
+    # return S
+
+prompt = 'edit the following latex code to include feedback. Make whatever additions you make to the file in red.'
+
 extracted_latex = correctLatex(extracted_latex)
+feedback_latex = correctLatex(generate_text(prompt + extracted_latex))
 
 # Replace 'output' with your desired filename without extension
-latex_to_pdf(extracted_latex, "/Users/timothygao/Documents/GitHub/treehacks", "output.pdf")
+latex_to_pdf(extracted_latex, "/Users/lavikjain/Documents/treehacks", "no_feedback.pdf")
+latex_to_pdf(feedback_latex, "/Users/lavikjain/Documents/treehacks", "feedback.pdf")
