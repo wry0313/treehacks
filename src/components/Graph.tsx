@@ -39,9 +39,12 @@ const Graph: React.FC<GraphProps> = ({ adjacencyList }) => {
     <ForceGraph2D
       graphData={graphData}
       nodeLabel="id"
-      nodeAutoColorBy="id"
-      linkDirectionalParticles="value"
-      linkDirectionalParticleSpeed={d => d.value * 0.001}
+        nodeAutoColorBy="id"
+        linkDirectionalParticles="value"
+        linkDirectionalParticleSpeed={d => d.value * 0.001}
+        width={800} // Set the width
+        height={600} // Set the height
+        
     />
   );
 };

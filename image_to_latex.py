@@ -9,11 +9,11 @@ import cv2
 import numpy as np
 from tempfile import NamedTemporaryFile
 from openai import OpenAI
-# from pdf2image import convert_from_path
-# from convex import ConvexClient
+
+from convex import ConvexClient
 load_dotenv(".env.local")
-# client = ConvexClient(os.getenv("CONVEX_URL"))
-# print(client.query("tasks:get"))
+client = ConvexClient(os.getenv("CONVEX_URL"))
+print(client.query("tasks:get"))
 
 
 load_dotenv()
