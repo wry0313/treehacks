@@ -180,19 +180,19 @@ def generate_text(prompt, context = "You are an AI Assistant"):
     )
 
     chat_completion = client.chat.completions.create(
-    messages=[
-        {
-        "role": "system",
-        "content": context,
-        },
-        {
-        "role": "user",
-        "content": prompt,
-        }
-    ],
-    model="mistralai/Mixtral-8x7B-Instruct-v0.1",
-    max_tokens=1024
-)
+        messages=[
+            {
+            "role": "system",
+            "content": context,
+            },
+            {
+            "role": "user",
+            "content": prompt,
+            }
+        ],
+        model="mistralai/Mixtral-8x7B-Instruct-v0.1",
+        max_tokens=1024
+    )
 
     return chat_completion.choices[0].message.content
 
