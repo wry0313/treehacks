@@ -11,7 +11,8 @@ export default function NotePage() {
   const [mode, setMode] = useState<"Upload" | "Feedback" | "Chatbot">("Upload");
   return (
     <div className="flex flex-row h-full w-full grow">
-      <div className="flex w-[15%] bg-blue-500 h-[100vh]">
+      <div className="fixed top-0 left-0 flex flex-col w-[15%] bg-blue-500 h-screen">
+
         <a
           href="/"
           className="hover:underline text-white font-semibold fixed top-1 left-2"
@@ -36,7 +37,7 @@ export default function NotePage() {
             </svg>
           </a>
         </a>
-        <div className="flex flex-col items-center  w-full text-white text-2xl mt-20 gap-y-10">
+        <div className="flex flex-col items-center w-full text-white text-2xl mt-20 gap-y-10">
           <button
             className={mode === "Upload" ? "font-bold" : ""}
             onClick={() => setMode("Upload")}
@@ -59,34 +60,12 @@ export default function NotePage() {
       </div>
 
       {notes && (
-        <div className="flex flex-col pl-10">
+        <div className="flex flex-col pl-10 h-screen overflow-scroll w-full pl-[15%]">
           <p className="text-2xl font-semibold p-2 h-[50px] bg-gray-200">
             {" "}
             {notes?.title}{" "}
           </p>
           <div>
-            {mode === "Upload" && (
-              <div className="flex flex-col">
-                <UploadNotesImagePage noteId={notes._id} />
-                <div className="p-4 w-[600px]">
-                  <p className="font-semibold pb-2">
-                    Images uploaded for the notes:
-                  </p>
-                  <div className="flex flex-row gap-x-2">
-                    {images &&
-                      images.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image as string}
-                          alt="Note Image"
-                          height={300}
-                          width={100}
-                        />
-                      ))}
-                  </div>
-                </div>
-              </div>
-            )}
 
             {mode === "Upload" && (
               <div className="flex flex-col">
@@ -111,52 +90,7 @@ export default function NotePage() {
               </div>
             )}
 
-            {mode === "Upload" && (
-              <div className="flex flex-col">
-                <UploadNotesImagePage noteId={notes._id} />
-                <div className="p-4 w-[600px]">
-                  <p className="font-semibold pb-2">
-                    Images uploaded for the notes:
-                  </p>
-                  <div className="flex flex-row gap-x-2">
-                    {images &&
-                      images.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image as string}
-                          alt="Note Image"
-                          height={300}
-                          width={100}
-                        />
-                      ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {mode === "Upload" && (
-              <div className="flex flex-col">
-                <UploadNotesImagePage noteId={notes._id} />
-                <div className="p-4 w-[600px]">
-                  <p className="font-semibold pb-2">
-                    Images uploaded for the notes:
-                  </p>
-                  <div className="flex flex-row gap-x-2">
-                    {images &&
-                      images.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image as string}
-                          alt="Note Image"
-                          height={300}
-                          width={100}
-                        />
-                      ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
+            
             {mode === "Feedback" && (
               <div className="w-[40vw] h-[100vh]">
                 <iframe
