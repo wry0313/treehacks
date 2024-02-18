@@ -10,10 +10,10 @@ import numpy as np
 from tempfile import NamedTemporaryFile
 from openai import OpenAI
 # from pdf2image import convert_from_path
-from convex import ConvexClient
+# from convex import ConvexClient
 load_dotenv(".env.local")
-client = ConvexClient(os.getenv("CONVEX_URL"))
-print(client.query("tasks:get"))
+# client = ConvexClient(os.getenv("CONVEX_URL"))
+# print(client.query("tasks:get"))
 
 
 load_dotenv()
@@ -194,7 +194,9 @@ def ImageToLatex(img_path):
 
 # image_path = 'lavik_test.png'
 # image_path = 'tim_test.png'
-image_path = 'small_test.png'
+# image_path = 'small_test.png'
+image_path = 'table_test.jpg'
 
 final_string = ImageToLatex(image_path)
 print(final_string)
+
