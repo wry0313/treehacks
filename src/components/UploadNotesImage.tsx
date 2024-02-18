@@ -90,9 +90,14 @@ export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
         toast.error(`Upload failed: ${JSON.stringify(json)}`);
         // throw new Error(`Upload failed: ${JSON.stringify(json)}`);
       }
+      setselectedImage(null);
+      setImagePreview(null);
       const { storageId } = json;
       // toast.success(`Upload successful: ${storageId}`);
-      const id = await mutateInsertNoteImage({ noteId: noteId, imageStorageId: storageId });
+      const id = await mutateInsertNoteImage({
+        noteId: noteId,
+        imageStorageId: storageId,
+      });
 
       const imageUrl = await getImageUrl({ storageId });
       console.log(imageUrl);
@@ -101,12 +106,14 @@ export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ image_url: imageUrl, noteId: noteId, noteImageId: id }),
+        body: JSON.stringify({
+          image_url: imageUrl,
+          noteId: noteId,
+          noteImageId: id,
+        }),
       });
       const resjson = await res.json();
       console.log(resjson);
-      setselectedImage(null);
-      setImagePreview(null);
     }
   };
 

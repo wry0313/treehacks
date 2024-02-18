@@ -5,6 +5,8 @@ import { useUser } from "@clerk/clerk-react";
 import { api } from "../../convex/_generated/api";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Id } from "../../convex/_generated/dataModel";
+import logo from "../assets/logo.png";
 export default function HomePage() {
   const { isAuthenticated } = useConvexAuth();
   const { user } = useUser();
@@ -42,18 +44,19 @@ export default function HomePage() {
               </label>
             </div>
             <div className="flex-1 px-2 mx-2 font-bold text-2xl text-white">
-              Prettier Notes
+              <img src={logo} alt="logo" className="h-14 w-13 inline" />
+              Elevate Notebooks
             </div>
             <div className="flex-none hidden lg:block">
               <ul className="menu menu-horizontal">
                 {/* Navbar menu content here */}
                 <li>
                   {isAuthenticated ? (
-                    <div className="btn btn-primary">
+                    <div className="btn ">
                       <SignOutButton />
                     </div>
                   ) : (
-                    <div className="btn btn-primary">
+                    <div className="btn ">
                       <SignInButton mode="modal" />
                     </div>
                   )}
@@ -92,9 +95,8 @@ export default function HomePage() {
         {userNotes?.map(({ _id, title, createdAt }) => (
           <NoteCard id={_id} title={title} date={createdAt} isAdd={false} />
         ))}
-        <NoteCard id={"add"} title={""} date={""} isAdd={true} />
+        <AddNoteCard />
       </div>
-
     </div>
   );
 }
@@ -112,45 +114,27 @@ const NoteCard = ({
 }) => {
   const navigate = useNavigate();
 
-  const insertNewNotes = useMutation(api.notes.insertNewNotes);
-  const { user } = useUser();
-  const { isAuthenticated } = useConvexAuth(); 
+  const getThumbNail = useQuery(api.noteImages.getOneImageByOneNoteId, {
+    noteId: id as Id<"notes">,
+  });
   return (
     <button
       key={id}
       onClick={() => {
-        if (isAdd) {
-          if (!isAuthenticated || !user) {
-            toast.error("Please sign in to add a new note");
-            return;
-          }
-          insertNewNotes({ userId: user.id }).then((id) => {
-            toast.success("New note added");
-            navigate(`/note/${id}`);
-          });
-        } else {
-          navigate(`/note/${id}`);
-        }
+        navigate(`/note/${id}`);
       }}
       className="cursor-pointer flex flex-col w-72 rounded-lg shadow-lg"
     >
       <div className="bg-gray-100 h-48 w-full rounded-t">
-        {isAdd && (
+        {getThumbNail ? (
+          <img
+            src={getThumbNail}
+            alt="thumbnail"
+            className="object-cover h-full w-full rounded-t"
+          />
+        ) : (
           <div className="flex justify-center items-center h-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-20 w-20 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
+            <DocumentIcon />
           </div>
         )}
       </div>
@@ -163,3 +147,65 @@ const NoteCard = ({
     </button>
   );
 };
+
+const AddNoteCard = () => {
+  const insertNewNotes = useMutation(api.notes.insertNewNotes);
+
+  const { user } = useUser();
+  const { isAuthenticated } = useConvexAuth();
+  const navigate = useNavigate();
+  return (
+    <button
+      onClick={() => {
+        if (!isAuthenticated || !user) {
+          toast.error("Please sign in to add a new note");
+          return;
+        }
+        insertNewNotes({ userId: user.id }).then((id) => {
+          toast.success("New note added");
+          navigate(`/note/${id}`);
+        });
+      }}
+      className="cursor-pointer flex flex-col w-72 rounded-lg shadow-lg"
+    >
+      <div className="bg-gray-100 h-48 w-full rounded-t">
+        <div className="flex justify-center items-center h-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-20 w-20 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+        </div>
+      </div>
+      <div className="px-6 py-4 grow w-full bg-blue-500 rounded-b">
+        <div className="font-bold text-xl mb-2 text-white">Add a new note</div>
+      </div>
+    </button>
+  );
+};
+
+const DocumentIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-10 h-10"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+    />
+  </svg>
+);

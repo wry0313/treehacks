@@ -65,3 +65,18 @@ export const getNoteImageUrlAndStatusByNoteId = query({
     return Promise.all(res);
   },
 });
+
+export const getOneImageByOneNoteId = query({
+  args: { noteId: v.id("notes") },
+  handler: async (ctx, args) => {
+    const images = await ctx.db
+      .query("noteImages")
+      .withIndex("by_noteId", (q) => q.eq("noteId", args.noteId))
+      .take(1);
+    if (images.length === 0) {
+      return Promise.resolve(null);
+    }
+    const res = await ctx.storage.getUrl(images[0].imageStorageId);
+    return Promise.resolve(res);
+  },
+});

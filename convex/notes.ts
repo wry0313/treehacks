@@ -47,3 +47,10 @@ function getCurrentDateTime(): string {
 
   return `${month}/${day} ${hour}:${minute}`;
 }
+
+export const updateNoteTitle = mutation({
+  args: { noteId: v.id("notes"), newTitle: v.string() },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.noteId, { title: args.newTitle });
+  },
+});

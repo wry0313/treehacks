@@ -1,4 +1,4 @@
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useParams } from "../../router";
 import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
@@ -12,8 +12,9 @@ const adjacencyList = {
   "3": ["2", "5"],
   "4": ["5", "6"],
   "5": ["6"],
-  "6": []
+  "6": [],
 };
+import ClipLoader from "react-spinners/ClipLoader";
 
 export default function NotePage() {
   const { id } = useParams("/note/:id" as never);
@@ -24,6 +25,11 @@ export default function NotePage() {
   const pdfs = useQuery(api.noteLatexPdf.getLatexPdfByNoteId, { noteId: id });
   console.log(pdfs);
   const [mode, setMode] = useState<"Upload" | "Feedback" | "Chatbot">("Upload");
+
+  const [editMode, setEditMode] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+
+  const updateNoteTitle = useMutation(api.notes.updateNoteTitle);
   return (
     <div className="flex flex-row h-full w-full grow">
       <div className="fixed top-0 left-0 flex flex-col w-[15%] bg-blue-500 h-screen">
@@ -75,10 +81,45 @@ export default function NotePage() {
 
       {notes && (
         <div className="flex flex-col h-screen overflow-scroll w-full ml-[15%] flex-grow">
-          <p className="text-2xl font-semibold p-2 h-[50px] bg-gray-200">
-            {" "}
-            {notes?.title}{" "}
-          </p>
+          <div className="text-2xl font-semibold p-2 h-[50px] bg-gray-200 flex flex-row gap-x-2 items-center">
+            {editMode ? (
+              <>
+                <input
+                  type="text"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="bg-slate-300 rounded focus:outline-none"
+                />
+                <button
+                  onClick={() => {
+                    setEditMode(false);
+                    notes.title = newTitle;
+                    updateNoteTitle({
+                      noteId: notes._id,
+                      newTitle: newTitle,
+                    });
+                  }}
+                >
+                  Save
+                </button>
+              </>
+            ) : (
+              <>
+                <p>{notes.title}</p>
+                <button
+                  onClick={() => {
+                    if (editMode) {
+                      setEditMode(false);
+                    } else {
+                      setEditMode(true);
+                    }
+                  }}
+                >
+                  <EditIcon />
+                </button>
+              </>
+            )}
+          </div>
           <div className="p-4 w-full flex-grow">
             {mode === "Upload" && (
               <div className="flex flex-col flex-grow w-full">
@@ -95,7 +136,7 @@ export default function NotePage() {
                             key={index}
                             src={image.url as string}
                             alt="Note Image"
-                            style={{ objectFit: "contain" }}
+                            className="object-contain rounded shadow-lg"
                             height={500}
                             width={200}
                           />
@@ -106,7 +147,14 @@ export default function NotePage() {
                                 <p className="text-green-700">Complete</p>
                               </div>
                             ) : (
-                              "Processing"
+                              <div className="flex flex-row gap-x-1">
+                                <ClipLoader
+                                  size={30}
+                                  aria-label="Loading Spinner"
+                                  data-testid="loader"
+                                />
+                                <p className="text-blue-700">loading</p>
+                              </div>
                             )}
                           </p>
                         </div>
@@ -116,46 +164,43 @@ export default function NotePage() {
               </div>
             )}
 
-{mode === "Feedback" && (
-  <div className="flex w-full h-[80vh]">
-    <div className="flex-grow">
-      {pdfs && pdfs.length > 0 ? (
-        pdfs.map((pdf, index) => (
-          <iframe
-            key={index}
-            src={pdf as string}
-            style={{ width: "50vw", height: "100%" }}
-            frameBorder="0"
-            title={`PDF document ${index + 1}`}
-          ></iframe>
-        ))
-      ) : images && images.length > 0 ? (
-        <p>Image is processing...</p>
-      ) : (
-        <p>No PDFs uploaded for this note</p>
-      )}
-    </div>
-    {images && images.length > 0 && (
-      <div className="flex-grow overflow-auto">
-        {images.map((image, index) => (
-          <img
-            key={index}
-            src={image.url as string}
-            alt="Note Image"
-            style={{ objectFit: "contain", width: "50vw", height: "auto" }}
-          />
-        ))}
-      </div>
-    )}
-  </div>
-)}
-
+            {mode === "Feedback" && (
+              <div className="flex w-full h-[80vh]">
+                <div className="flex-grow">
+                  {pdfs && pdfs.length > 0 ? (
+                    pdfs.map((pdf, index) => (
+                      <div className="flex flex-row gap-x-2 justify-start items-start">
+                        <iframe
+                          key={index}
+                          src={pdf as string}
+                          style={{ width: "50vw", height: "60vh" }}
+                          title={`PDF document ${index + 1}`}
+                        ></iframe>
+                        {images && images.length > index && (
+                          <img
+                            src={images[index].url as string}
+                            alt="Note Image"
+                            className="rounded object-contain"
+                            height={500}
+                            width={400}
+                          />
+                        )}
+                      </div>
+                    ))
+                  ) : images && images.length > 0 ? (
+                    <p>Image is processing...</p>
+                  ) : (
+                    <p>No PDFs uploaded for this note</p>
+                  )}
+                </div>
+              </div>
+            )}
 
             {mode === "Chatbot" && (
               <div className="">
                 <ChatBot />
                 {/* <ChatBot/> */}
-                <Graph adjacencyList={adjacencyList}/> 
+                <Graph adjacencyList={adjacencyList} />
               </div>
             )}
           </div>
@@ -178,6 +223,23 @@ const CheckIcon = () => (
       strokeLinecap="round"
       strokeLinejoin="round"
       d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+    />
+  </svg>
+);
+
+const EditIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
     />
   </svg>
 );
