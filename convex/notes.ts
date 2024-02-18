@@ -8,16 +8,16 @@ export const get = query({
   },
 });
 
-export const getDocById = query({
-  args: { docId: v.id("notes") },
+export const getNoteById = query({
+  args: { noteId: v.id("notes") },
   handler: async (ctx, args) => {
-    const retrivedDoc = await ctx.db.get(args.docId);
-    return retrivedDoc;
+    const retrivedNote = await ctx.db.get(args.noteId);
+    return retrivedNote;
   },
 });
 
-export const getDocsByUserId = query({
-  args: { userId: v.id("users") },
+export const getNotesByUserId = query({
+  args: { userId: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db
       .query("notes")
