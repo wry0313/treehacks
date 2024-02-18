@@ -18,6 +18,6 @@ export default defineSchema({
   }),
   noteImages: defineTable({
     noteId: v.string(),
-    imageUrl: v.string(),
-  }),
+    imageStorageId: v.id("_storage")
+  }).index("by_noteId", ["noteId"]),
 });

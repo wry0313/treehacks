@@ -5,14 +5,18 @@ import {
   Authenticated,
   Unauthenticated,
   useConvexAuth,
+  useQuery,
 } from "convex/react";
 import { useUser } from "@clerk/clerk-react";
-
+import { api } from "../../convex/_generated/api";
 export default function HomePage() {
   const { isAuthenticated } = useConvexAuth();
   const { user } = useUser();
   console.log(user);
-
+  const userNotes = useQuery(api.notes.getNotesByUserId, {
+    userId: user?.id ?? "",
+  });
+  console.log(userNotes);
   return (
     <div className="w-full ">
       <div className="drawer">
@@ -49,13 +53,13 @@ export default function HomePage() {
                 {/* Navbar menu content here */}
                 <li>
                   {isAuthenticated ? (
-                    <button className="btn btn-primary">
+                    <div className="btn btn-primary">
                       <SignOutButton />
-                    </button>
+                    </div>
                   ) : (
-                    <button className="btn btn-primary">
+                    <div className="btn btn-primary">
                       <SignInButton mode="modal" />
-                    </button>
+                    </div>
                   )}
                 </li>
               </ul>
@@ -80,13 +84,35 @@ export default function HomePage() {
           </ul>
         </div>
       </div>
+      <div className="p-5">
+        {isAuthenticated ? (
+          <h1 className="text-2xl font-bold">Welcome {user?.fullName}</h1>
+        ) : (
+          <h1 className="text-2xl font-bold">Welcome to the home page</h1>
+        )}
+      </div>
 
-      {isAuthenticated ? (
-        <h1 className="text-xl font-bold">Welcome {user?.fullName}</h1>
-      ) : (
-        <h1 className="text-xl font-bold">Welcome to the home page</h1>
-      )}
-
+      <div className="grid grid-cols-3 gap-4 p-5">
+        {userNotes?.map(({_id, title, createdAt}) => (
+          <NoteCard id={_id} title={title} date={createdAt} />
+        ))}
+      </div>
     </div>
   );
 }
+
+const NoteCard = ({ id, title, date }: { id: string,title: string; date: string }) => {
+  return (
+    <a  href={`/note/${id}`}
+    
+    className="cursor-pointer flex flex-col w-72 rounded-lg shadow-lg">
+      <div className="bg-gray-100 h-48 w-full rounded-t">
+
+      </div>
+      <div className="px-6 py-4 grow w-full bg-blue-500 rounded-b">
+        <div className="font-bold text-xl mb-2 text-white">{title}</div>
+        <p className="text-gray-200 text-base">{date}</p>
+      </div>
+    </a>
+  );
+};
