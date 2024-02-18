@@ -4,6 +4,17 @@ import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
 import UploadNotesImagePage from "../../components/UploadNotesImage";
 import ChatBot from "../../components/ChatBot";
+import Graph from "../../components/Graph";
+
+const adjacencyList = {
+  "1": ["2", "3"],
+  "2": ["4"],
+  "3": ["2", "5"],
+  "4": ["5", "6"],
+  "5": ["6"],
+  "6": []
+};
+
 export default function NotePage() {
   const { id } = useParams("/note/:id" as never);
   const notes = useQuery(api.notes.getNoteById, { noteId: id });
@@ -143,6 +154,8 @@ export default function NotePage() {
             {mode === "Chatbot" && (
               <div className="">
                 <ChatBot />
+                {/* <ChatBot/> */}
+                <Graph adjacencyList={adjacencyList}/> 
               </div>
             )}
           </div>
