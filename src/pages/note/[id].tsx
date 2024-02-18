@@ -11,7 +11,7 @@ export default function NotePage() {
   const [mode, setMode] = useState<"Upload" | "Feedback" | "Chatbot">("Upload");
   return (
     <div className="flex flex-row h-full w-full grow">
-      <div className="flex w-[25%] bg-blue-500 h-[100vh]">
+      <div className="flex w-[20%] bg-blue-500 h-[100vh]">
         <a
           href="/"
           className="hover:underline text-white font-semibold fixed top-1 left-2"
