@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { TogetherAPIKey } from './config'; // Import your Together.ai API key securely
 
 type Message = {
   id: number;
@@ -11,6 +12,45 @@ const ChatbotComponent = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const fetchMessage = async (inputText: string): Promise<string> => {
+    const url = 'https://api.together.xyz/v1/chat/completions';
+    const data = {
+      model: 'mistralai/Mixtral-8x7B-Instruct-v0.1', 
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a helpful assistant.'
+        },
+        {
+          role: 'user',
+          content: inputText
+        }
+      ]
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TogetherAPIKey}` // Use your secure API key
+      },
+      body: JSON.stringify(data)
+    };
+
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json();
+      const message = result.choices[0]['message']['content'];
+
+      console.log(message);
+
+      return message;
+    } catch (error) {
+      console.error('Error fetching message from Together.ai:', error);
+      return 'Sorry, there was an error processing your request.';
+    }
+  };
+  
   const sendMessage = async () => {
     if (!currentMessage.trim()) return;
     
@@ -26,20 +66,13 @@ const ChatbotComponent = () => {
     setIsLoading(true);
     try {
       // Substitute this URL with your API endpoint
-      const response = await fetch('YOUR_API_ENDPOINT', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Include your API key or other authentication headers as required
-        },
-        body: JSON.stringify({ message: currentMessage }),
-      });
+      const data = await fetchMessage(currentMessage);
 
-      const data = await response.json();
+      // const data = await response.json();
 
       const botMessage: Message = {
         id: messages.length + 1,
-        text: data.reply, // Adjust according to the structure of your API response
+        text: data,
         sender: 'bot',
       };
 
@@ -85,15 +118,6 @@ const ChatbotComponent = () => {
       </div>
     </div>
   );
-  
-  
-  
-  
-  
-  
-
-
-
 };
 
 export default ChatbotComponent;
