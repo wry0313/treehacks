@@ -1,24 +1,20 @@
-#### INCREASE TOKEN LIIMIT
-
 import subprocess
 from openai import OpenAI
 import os
 import requests
 from dotenv import load_dotenv
-import os
 import base64
-
 import cv2
 import numpy as np
+from tempfile import NamedTemporaryFile
+from openai import OpenAI
 
 load_dotenv()
 
 TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-
 def preprocess_image_for_ocr(image_path):
-    # Load the image
     image = cv2.imread(image_path)
     
     # Convert the image to grayscale
@@ -84,10 +80,6 @@ def image_to_text(image_path):
     
     return response.json()['choices'][0]['message']['content']
 
-import subprocess
-import os
-from tempfile import NamedTemporaryFile
-
 def latex_to_pdf(latex_code, output_dir='./', filename='output.pdf'):
     # Ensure the output directory exists
     if not os.path.exists(output_dir):
@@ -135,60 +127,64 @@ def latex_to_pdf(latex_code, output_dir='./', filename='output.pdf'):
     else:
         return "Error: PDF generation failed."
 
-image_path = 'lavik_test.png'
+# def generate_text(prompt, context = "You are an AI Assistant"):
+#     client = OpenAI(api_key=TOGETHER_API_KEY,
+#     base_url='https://api.together.xyz',
+#     )
+
+#     chat_completion = client.chat.completions.create(
+#         messages=[
+#             {
+#             "role": "system",
+#             "content": context,
+#             },
+#             {
+#             "role": "user",
+#             "content": prompt,
+#             }
+#         ],
+#         model="mistralai/Mixtral-8x7B-Instruct-v0.1",
+#         max_tokens=1024
+#     )
+
+#     return chat_completion.choices[0].message.content
+
+
+def generate_text(prompt, context="You are an AI Assistant"):
+    client = OpenAI()
+
+    response = client.chat.completions.create(
+    model="gpt-4-0125-preview",
+    
+    messages=[
+        {"role": "system", "content": "You must generate clean and beautiful latex code that compiles"},
+        {"role": "user", "content": prompt}
+    ],
+    max_tokens=1024
+    )
+    print(response)
+    print(response.choices[0].message.content)
+    return response.choices[0].message.content
+
+def ImageToLatex(img_path):
+    processed_image_path = preprocess_image_for_ocr(img_path)
+    extracted_latex = image_to_text(processed_image_path)
+    latex_to_pdf(extracted_latex, "/Users/timothygao/Documents/treehacks", "no_feedback.pdf")
+
+    feedback_prompt =  '''
+    Correct any errors in the document. Any inserted corrections are in red font.
+
+    At the very bottom of the document, add an additional section explaining each error correction. This section should be titled Error Corrections and should be in black.
+
+    Here is the latex to be corrected:
+    '''
+
+    feedback_latex = generate_text(feedback_prompt + extracted_latex)
+
+    latex_to_pdf(feedback_latex, "/Users/timothygao/Documents/treehacks", "feedback.pdf")
+
+# image_path = 'lavik_test.png'
 # image_path = 'tim_test.png'
-# image_path = 'small_test.png'
+image_path = 'small_test.png'
 
-processed_image_path = preprocess_image_for_ocr(image_path)
-print(processed_image_path)
-extracted_latex = image_to_text(processed_image_path)
-print(extracted_latex)
-
-
-def generate_text(prompt, context = "You are an AI Assistant"):
-    client = OpenAI(api_key=TOGETHER_API_KEY,
-    base_url='https://api.together.xyz',
-    )
-
-    chat_completion = client.chat.completions.create(
-        messages=[
-            {
-            "role": "system",
-            "content": context,
-            },
-            {
-            "role": "user",
-            "content": prompt,
-            }
-        ],
-        model="mistralai/Mixtral-8x7B-Instruct-v0.1",
-        max_tokens=1024
-    )
-
-    return chat_completion.choices[0].message.content
-
-def correctLatex(S):
-    return S
-    # return generate_text('Correct any errors in the following LaTeX script:\n' + S)
-    # cnt = 0
-    
-    # for i in range(len(S)):
-    #     if(S[i] == '$'):
-    #         cnt += 1
-        
-    # if cnt % 2 == 1:
-    #     S += 1
-    
-    # if "\end{document}" not in S:
-    #     S += "\end{document}"
-    
-    # return S
-
-prompt = 'edit the following latex code to include feedback. Write in red font what is wrong, and how to correct, organize things neatly.'
-
-extracted_latex = correctLatex(extracted_latex)
-feedback_latex = correctLatex(generate_text(prompt + extracted_latex))
-
-# Replace 'output' with your desired filename without extension
-latex_to_pdf(extracted_latex, "/Users/timothygao/Documents/treehacks", "no_feedback.pdf")
-latex_to_pdf(feedback_latex, "/Users/timothygao/Documents/treehacks", "feedback.pdf")
+ImageToLatex(image_path)
