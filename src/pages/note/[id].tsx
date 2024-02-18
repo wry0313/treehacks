@@ -8,12 +8,12 @@ export default function NotePage() {
   const { id } = useParams("/note/:id" as never);
   const notes = useQuery(api.notes.getNoteById, { noteId: id });
   const images = useQuery(api.noteImages.getNoteImagesByNoteId, { noteId: id });
-  console.log(images);
+  const pdfs = useQuery(api.noteLatexPdf.getLatexPdfByNoteId, { noteId: id });
+  console.log(pdfs);
   const [mode, setMode] = useState<"Upload" | "Feedback" | "Chatbot">("Upload");
   return (
     <div className="flex flex-row h-full w-full grow">
       <div className="fixed top-0 left-0 flex flex-col w-[15%] bg-blue-500 h-screen">
-
         <a
           href="/"
           className="hover:underline text-white font-semibold fixed top-1 left-2"
@@ -61,29 +61,29 @@ export default function NotePage() {
       </div>
 
       {notes && (
-        <div className="flex flex-col pl-10 h-screen overflow-scroll w-full pl-[15%]">
+        <div className="flex flex-col h-screen overflow-scroll w-full ml-[15%] flex-grow">
           <p className="text-2xl font-semibold p-2 h-[50px] bg-gray-200">
             {" "}
             {notes?.title}{" "}
           </p>
-          <div>
-
+          <div className="p-4 w-full flex-grow">
             {mode === "Upload" && (
-              <div className="flex flex-col">
+              <div className="flex flex-col flex-grow w-full">
                 <UploadNotesImagePage noteId={notes._id} />
                 <div className="p-4 w-[600px]">
                   <p className="font-semibold pb-2">
                     Images uploaded for the notes:
                   </p>
-                  <div className="flex flex-row gap-x-2">
+                  <div className="flex flex-row gap-x-2 overflow-scroll flex-grow w-[190%]">
                     {images &&
                       images.map((image, index) => (
                         <img
                           key={index}
                           src={image as string}
                           alt="Note Image"
-                          height={300}
-                          width={100}
+                          style={{ objectFit: "contain" }}
+                          height={500}
+                          width={200}
                         />
                       ))}
                   </div>
@@ -91,21 +91,28 @@ export default function NotePage() {
               </div>
             )}
 
-            
             {mode === "Feedback" && (
               <div className="w-[40vw] h-[100vh]">
-                <iframe
+                {/* <iframe
                   src="https://arxiv.org/pdf/2402.09859.pdf"
                   width="100%"
                   height="100%"
-                ></iframe>
+                ></iframe> */}
+                {pdfs &&
+                  pdfs.map((pdf, index) => (
+                    <iframe
+                      key={index}
+                      src={pdf as string}
+                      width="100%"
+                      height="100%"
+                    ></iframe>
+                  ))}
               </div>
             )}
 
-               
             {mode === "Chatbot" && (
               <div className="w-[40vw] h-[100vh]">
-                <ChatBot/>
+                <ChatBot />
               </div>
             )}
           </div>

@@ -14,7 +14,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as http from "../http.js";
 import type * as noteImages from "../noteImages.js";
+import type * as noteLatexPdf from "../noteLatexPdf.js";
 import type * as notes from "../notes.js";
 import type * as tasks from "../tasks.js";
 
@@ -27,7 +29,9 @@ import type * as tasks from "../tasks.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  http: typeof http;
   noteImages: typeof noteImages;
+  noteLatexPdf: typeof noteLatexPdf;
   notes: typeof notes;
   tasks: typeof tasks;
 }>;

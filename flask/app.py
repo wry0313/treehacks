@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -11,28 +11,46 @@ def hello_world():
 if __name__ == '__main__':
     app.run(debug=True)
 
+
 @app.route('/image_to_latex', methods=['POST'])
 def image_to_latex():
-    # Get the image from the request
-    image = request.files['image']
+    # Get the image url from the request boyd
+    body = request.json
+    image_url = body['image_url']
+    noteId = body['noteId']
+    print(noteId)
+    print(image_url)
     image_path = './tmp/image.jpg'
-    image.save(image_path)
+    os.makedirs(os.path.dirname(image_path), exist_ok=True)
+
+    # Download the image
+    try:
+        response = requests.get(image_url)
+        response.raise_for_status()  # Check if the request was successful
+        with open(image_path, 'wb') as f:
+            f.write(response.content)
+        print("Image downloaded")
+        # Add your logic for processing the image to LaTeX here
+        # return jsonify({'message': 'Image processed successfully'}), 200
+    except requests.RequestException as e:
+        print(e)
+        return jsonify({'error': 'Failed to download the image'}), 500
 
     # Convert the image to LaTeX
     
     latext = ImageToLatex(image_path)
+    print(latext)
 
     with open("feedback.pdf", "rb") as f:
         pdf_bytes = f.read()
-        pdf_b64 = base64.b64encode(pdf_bytes).decode('utf-8')
-        # upload pdf to convex
+        # No need for base64 encoding
         header = {
-            { "Content-Type": "application/pdf"}
+            "Content-Type": "application/pdf"
         }
-        payload = pdf_b64
-        response = requests.post(os.getenv("CONVEX_URL"), headers=header, data=payload)
+        # Send the raw PDF bytes
+        response = requests.post("https://astute-cheetah-548.convex.site/uploadPdf?noteId=" + noteId, headers=header, data=pdf_bytes)
         print(response)
-        return latext
+        return jsonify({"latex": latext, "feedback_pdf": base64.b64encode(pdf_bytes).decode('utf-8')}), 200
     # Return the LaTeX
 
 import subprocess
@@ -49,13 +67,14 @@ from openai import OpenAI
 from convex import ConvexClient
 load_dotenv(".env.local")
 client = ConvexClient(os.getenv("CONVEX_URL"))
-print(client.query("tasks:get"))
+# print(client.query("tasks:get"))
 
 
 load_dotenv()
 
 TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+print(OPENAI_API_KEY)
 
 def preprocess_image_for_ocr(image_path):
     image = cv2.imread(image_path)
@@ -121,7 +140,9 @@ def image_to_text(image_path):
 
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
     
-    return response.json()['choices'][0]['message']['content']
+    res = response.json()
+    print(res)
+    return res['choices'][0]['message']['content']
 
 def latex_to_pdf(latex_code, output_dir='./', filename='output.pdf'):
     # Ensure the output directory exists
@@ -212,7 +233,7 @@ def generate_text(prompt, context="You are an AI Assistant"):
 def ImageToLatex(img_path):
     processed_image_path = preprocess_image_for_ocr(img_path)
     extracted_latex = image_to_text(processed_image_path)
-    latex_to_pdf(extracted_latex, "/Users/gavinwang/Documents/treehacks", "no_feedback.pdf")
+    latex_to_pdf(extracted_latex, "/Users/gavinwang/CODE/treehacks/flask", "no_feedback.pdf")
 
     feedback_prompt =  '''
     Correct any errors in the document. Any inserted corrections are in red font.
@@ -224,5 +245,8 @@ def ImageToLatex(img_path):
 
     feedback_latex = generate_text(feedback_prompt + extracted_latex)
 
-    latex_to_pdf(feedback_latex, "/Users/gavinwang/Documents/treehacks", "feedback.pdf")
+    latex_to_pdf(feedback_latex, "/Users/gavinwang/CODE/treehacks/flask", "feedback.pdf")
     return extracted_latex
+
+if __name__ == '__main__':
+    app.run(debug=True)

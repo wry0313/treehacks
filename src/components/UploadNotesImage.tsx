@@ -1,7 +1,7 @@
 import { useState, DragEvent, useRef } from "react";
 import toast from "react-hot-toast";
 
-import { useMutation } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
 export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
@@ -73,6 +73,7 @@ export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
   };
 
   const mutateInsertNoteImage = useMutation(api.noteImages.insertNoteImage);
+  const getImageUrl = useAction(api.noteImages.getImageUrlFromStorageId);
 
   const handleUploadClick = async () => {
     if (selectedImage) {
@@ -90,8 +91,19 @@ export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
         // throw new Error(`Upload failed: ${JSON.stringify(json)}`);
       }
       const { storageId } = json;
-      toast.success(`Upload successful: ${storageId}`);
+      // toast.success(`Upload successful: ${storageId}`);
       mutateInsertNoteImage({ noteId: noteId, imageStorageId: storageId });
+      const imageUrl = await getImageUrl({ storageId });
+      console.log(imageUrl);
+      const res = await fetch(`http://127.0.0.1:5000/image_to_latex`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image_url: imageUrl, noteId: noteId }),
+      });
+      const resjson = await res.json();
+      console.log(resjson);
       setselectedImage(null);
       setImagePreview(null);
     }

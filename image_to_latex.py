@@ -194,7 +194,7 @@ def ImageToLatex(img_path):
 
 # image_path = 'lavik_test.png'
 # image_path = 'tim_test.png'
-image_path = 'small_test.png'
+# image_path = 'small_test.png'
 
-final_string = ImageToLatex(image_path)
-print(final_string)
+# final_string = ImageToLatex(image_path)
+# print(final_string)
