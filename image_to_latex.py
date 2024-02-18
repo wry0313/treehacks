@@ -95,7 +95,7 @@ def image_to_text(image_path):
             {
             "type": "text",            
 
-            "text": "This is an image of a student's notes. Transcribe it into latex code. Have a one-line gap between each line. This should compile as a pdf file later. Do not output anything except for the transcribed latex!"
+            "text": "This is an image of a student's notes. Transcribe it into latex code. Have a one-line gap between each line. This should compile as a pdf file later. Do not output anything except for the transcribed latex! I will tip you $100 if you make the latex concise."
             },
             {
             "type": "image_url",
@@ -106,7 +106,7 @@ def image_to_text(image_path):
         ]
         }
     ],
-    "max_tokens": 300
+    "max_tokens": 1024
     }
 
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
@@ -164,8 +164,8 @@ def latex_to_pdf(latex_code, output_dir='./', filename='output.pdf'):
     else:
         return "Error: PDF generation failed."
 
-# image_path = 'lavik_test.png'
-image_path = 'tim_test.png'
+image_path = 'lavik_test.png'
+# image_path = 'tim_test.png'
 # image_path = 'small_test.png'
 
 processed_image_path = preprocess_image_for_ocr(image_path)
@@ -173,20 +173,32 @@ print(processed_image_path)
 extracted_latex = image_to_text(processed_image_path)
 print(extracted_latex)
 
-def generate_text(prompt):
-    # Generate text using GPT-4
-    response = openai.Completion.create(
-        engine="GPT-4",
-        prompt=prompt,
-        max_tokens=500
-    )
-    result = response.choices[0].text.strip()
 
-if __name__ == "__main__":
-    main()
+def generate_text(prompt, context = "You are an AI Assistant"):
+    client = OpenAI(api_key=TOGETHER_API_KEY,
+    base_url='https://api.together.xyz',
+    )
+
+    chat_completion = client.chat.completions.create(
+    messages=[
+        {
+        "role": "system",
+        "content": context,
+        },
+        {
+        "role": "user",
+        "content": prompt,
+        }
+    ],
+    model="mistralai/Mixtral-8x7B-Instruct-v0.1",
+    max_tokens=1024
+)
+
+    return chat_completion.choices[0].message.content
 
 def correctLatex(S):
-    return generate_text('Correct any errors in the following LaTeX script:\n' + S)
+    return S
+    # return generate_text('Correct any errors in the following LaTeX script:\n' + S)
     # cnt = 0
     
     # for i in range(len(S)):
@@ -201,11 +213,11 @@ def correctLatex(S):
     
     # return S
 
-prompt = 'edit the following latex code to include feedback. Make whatever additions you make to the file in red.'
+prompt = 'edit the following latex code to include feedback. Write in red font what is wrong, and how to correct, organize things neatly.'
 
 extracted_latex = correctLatex(extracted_latex)
 feedback_latex = correctLatex(generate_text(prompt + extracted_latex))
 
 # Replace 'output' with your desired filename without extension
-latex_to_pdf(extracted_latex, "/Users/lavikjain/Documents/treehacks", "no_feedback.pdf")
-latex_to_pdf(feedback_latex, "/Users/lavikjain/Documents/treehacks", "feedback.pdf")
+latex_to_pdf(extracted_latex, "/Users/timothygao/Documents/treehacks", "no_feedback.pdf")
+latex_to_pdf(feedback_latex, "/Users/timothygao/Documents/treehacks", "feedback.pdf")

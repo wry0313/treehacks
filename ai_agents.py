@@ -37,4 +37,4 @@ def queryText(input = "What is 1 + 1", context = "You are an AI Assistant"):
     return chat_completion.choices[0].message.content
 
 
-print(queryText(input="Hello! whats your name"))
+print(queryText(input="Hello! whats your name. Give me an apple"))
