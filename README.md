@@ -1,30 +1,22 @@
-# React + TypeScript + Vite
+# Elevate
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Inspiration
+Every science/math student in college spends more time "TeXing up" their problem sets than actually solving the problems. The simple truth is that formatting problem sets is a huge time-suck.
 
-Currently, two official plugins are available:
+## What it does
+Upload image(s) of your notes/problem sets and watch Elevate beautifully format them into a LaTeX document. An additional created document displays feedback to the work.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## How we built it
+Frontend with React. Backend with Convex. 
+GPT-4 with Vision processes the image and generates LaTeX script. GPT-4 then processes that LaTeX and adds feedback within the LaTeX script. Finally, we load that file as the context for a Mistral-chatbot that can provide insights from the notes/problem set. 
 
-## Expanding the ESLint configuration
+## Challenges we ran into
+Using LLMs to format and position feedback within the LaTeX scripts. 
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Accomplishments that we're proud of
 
-- Configure the top-level `parserOptions` property like this:
+## What we learned
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## What's next for Elevate
+Looking to expand into other realms of the EdTech space!
