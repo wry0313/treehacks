@@ -24,10 +24,10 @@ export const getNoteImagesByNoteId = query({
       .withIndex("by_noteId", (q) => q.eq("noteId", args.noteId))
       .collect();
 
-    const res = images.map(async(image) => {
+    const res = images.map(async (image) => {
       const url = await ctx.storage.getUrl(image.imageStorageId);
       return url;
-    })
+    });
     return Promise.all(res);
   },
 });
