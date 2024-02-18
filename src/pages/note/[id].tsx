@@ -3,6 +3,7 @@ import { useParams } from "../../router";
 import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
 import UploadNotesImagePage from "../../components/UploadNotesImage";
+import ChatBot from "../../components/ChatBot";
 export default function NotePage() {
   const { id } = useParams("/note/:id" as never);
   const notes = useQuery(api.notes.getNoteById, { noteId: id });
@@ -98,6 +99,13 @@ export default function NotePage() {
                   width="100%"
                   height="100%"
                 ></iframe>
+              </div>
+            )}
+
+               
+            {mode === "Chatbot" && (
+              <div className="w-[40vw] h-[100vh]">
+                <ChatBot/>
               </div>
             )}
           </div>

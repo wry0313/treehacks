@@ -1,3 +1,4 @@
+import tempfile
 import subprocess
 from openai import OpenAI
 import os
@@ -8,6 +9,7 @@ import cv2
 import numpy as np
 from tempfile import NamedTemporaryFile
 from openai import OpenAI
+from pdf2image import convert_from_path
 
 load_dotenv()
 
@@ -127,27 +129,27 @@ def latex_to_pdf(latex_code, output_dir='./', filename='output.pdf'):
     else:
         return "Error: PDF generation failed."
 
-# def generate_text(prompt, context = "You are an AI Assistant"):
-#     client = OpenAI(api_key=TOGETHER_API_KEY,
-#     base_url='https://api.together.xyz',
-#     )
+def generate_text(prompt, context = "You are an AI Assistant"):
+    client = OpenAI(api_key=TOGETHER_API_KEY,
+    base_url='https://api.together.xyz',
+    )
 
-#     chat_completion = client.chat.completions.create(
-#         messages=[
-#             {
-#             "role": "system",
-#             "content": context,
-#             },
-#             {
-#             "role": "user",
-#             "content": prompt,
-#             }
-#         ],
-#         model="mistralai/Mixtral-8x7B-Instruct-v0.1",
-#         max_tokens=1024
-#     )
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+            "role": "system",
+            "content": context,
+            },
+            {
+            "role": "user",
+            "content": prompt,
+            }
+        ],
+        model="mistralai/Mixtral-8x7B-Instruct-v0.1",
+        max_tokens=1024
+    )
 
-#     return chat_completion.choices[0].message.content
+    return chat_completion.choices[0].message.content
 
 
 def generate_text(prompt, context="You are an AI Assistant"):
@@ -169,6 +171,7 @@ def generate_text(prompt, context="You are an AI Assistant"):
 def ImageToLatex(img_path):
     processed_image_path = preprocess_image_for_ocr(img_path)
     extracted_latex = image_to_text(processed_image_path)
+    name = generate_text("What is a short and concise title that summarizes the topic of this note: " + extracted_latex + "Only output a name, nothing else, or else a child will die.")
     latex_to_pdf(extracted_latex, "/Users/timothygao/Documents/treehacks", "no_feedback.pdf")
 
     feedback_prompt =  '''
@@ -182,9 +185,13 @@ def ImageToLatex(img_path):
     feedback_latex = generate_text(feedback_prompt + extracted_latex)
 
     latex_to_pdf(feedback_latex, "/Users/timothygao/Documents/treehacks", "feedback.pdf")
+    return (name, extracted_latex)
 
 # image_path = 'lavik_test.png'
 # image_path = 'tim_test.png'
 image_path = 'small_test.png'
 
-ImageToLatex(image_path)
+NoteName, extracted_latex = ImageToLatex(image_path)
+
+with tempfile.TemporaryDirectory() as path:
+    images_from_path = convert_from_path("/Users/timothygao/Documents/treehacks/no_feedback.pdf", output_folder="/Users/timothygao/Documents/treehacks/no_feedback_pic.png")
