@@ -42,9 +42,27 @@ const Graph: React.FC<GraphProps> = ({ adjacencyList }) => {
         nodeAutoColorBy="id"
         linkDirectionalParticles="value"
         linkDirectionalParticleSpeed={d => d.value * 0.001}
-        width={800} // Set the width
-        height={600} // Set the height
-        
+        width={1000} // Set the width
+        height={1000} // Set the height
+        nodeCanvasObject={(node, ctx, globalScale) => {
+            // Ensure node.x and node.y are defined
+            if (typeof node.x === 'number' && typeof node.y === 'number') {
+              const label = node.id;
+              const fontSize = 12 / globalScale; // Adjust font size based on zoom level
+              ctx.font = `${fontSize}px Sans-Serif`;
+              ctx.fillStyle = node.color || 'rgba(255, 255, 255, 0.8)'; // Fallback node color if undefined
+              // Draw the node circle
+              ctx.beginPath();
+              ctx.arc(node.x, node.y, 5, 0, 2 * Math.PI, false);
+              ctx.fill();
+              // Draw the text above the node
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'bottom';
+              ctx.fillStyle = 'black'; // Text color
+              ctx.fillText(label, node.x, node.y - 7); // Adjust the y value to display the text above the node
+            }
+          }}
+          
     />
   );
 };
