@@ -113,12 +113,13 @@ const NoteCard = ({
 
   const insertNewNotes = useMutation(api.notes.insertNewNotes);
   const { user } = useUser();
+  const { isAuthenticated } = useConvexAuth(); 
   return (
     <button
       key={id}
       onClick={() => {
         if (isAdd) {
-          if (!user) {
+          if (!isAuthenticated || !user) {
             toast.error("Please sign in to add a new note");
             return;
           }

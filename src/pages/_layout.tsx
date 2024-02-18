@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,9 +11,8 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   return (
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-            <Outlet />
-        </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+    </QueryClientProvider>
   );
 }
