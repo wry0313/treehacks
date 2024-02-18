@@ -1,3 +1,4 @@
+import tempfile
 import subprocess
 from openai import OpenAI
 import os
@@ -175,7 +176,8 @@ def generate_text(prompt, context="You are an AI Assistant"):
 def ImageToLatex(img_path):
     processed_image_path = preprocess_image_for_ocr(img_path)
     extracted_latex = image_to_text(processed_image_path)
-    latex_to_pdf(extracted_latex, "/Users/gavinwang/Documents/treehacks", "no_feedback.pdf")
+    name = generate_text("What is a short and concise title that summarizes the topic of this note: " + extracted_latex + "Only output a name, nothing else, or else a child will die.")
+    latex_to_pdf(extracted_latex, "/Users/timothygao/Documents/treehacks", "no_feedback.pdf")
 
     feedback_prompt =  '''
     Correct any errors in the document. Any inserted corrections are in red font.
