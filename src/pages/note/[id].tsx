@@ -11,14 +11,33 @@ export default function NotePage() {
   const [mode, setMode] = useState<"Upload" | "Feedback" | "Chatbot">("Upload");
   return (
     <div className="flex flex-row h-full w-full grow">
-      <div className="flex w-[20%] bg-blue-500 h-[100vh]">
+      <div className="fixed top-0 left-0 flex flex-col w-[15%] bg-blue-500 h-screen">
+
         <a
           href="/"
           className="hover:underline text-white font-semibold fixed top-1 left-2"
         >
-          Back
+          <a
+            href="/"
+            className="text-white font-semibold fixed top-1 left-2 mt-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 hover:opacity-75"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </a>
         </a>
-        <div className="flex flex-col items-center  w-full text-white text-2xl mt-20 gap-y-10">
+        <div className="flex flex-col items-center w-full text-white text-2xl mt-20 gap-y-10">
           <button
             className={mode === "Upload" ? "font-bold" : ""}
             onClick={() => setMode("Upload")}
@@ -39,10 +58,15 @@ export default function NotePage() {
           </button>
         </div>
       </div>
+
       {notes && (
-        <div className="flex flex-col">
-          <p className="text-2xl font-semibold p-2 h-[50px]">{notes?.title}</p>
+        <div className="flex flex-col pl-10 h-screen overflow-scroll w-full pl-[15%]">
+          <p className="text-2xl font-semibold p-2 h-[50px] bg-gray-200">
+            {" "}
+            {notes?.title}{" "}
+          </p>
           <div>
+
             {mode === "Upload" && (
               <div className="flex flex-col">
                 <UploadNotesImagePage noteId={notes._id} />
@@ -63,6 +87,17 @@ export default function NotePage() {
                       ))}
                   </div>
                 </div>
+              </div>
+            )}
+
+            
+            {mode === "Feedback" && (
+              <div className="w-[40vw] h-[100vh]">
+                <iframe
+                  src="https://arxiv.org/pdf/2402.09859.pdf"
+                  width="100%"
+                  height="100%"
+                ></iframe>
               </div>
             )}
           </div>

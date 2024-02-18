@@ -94,6 +94,7 @@ export default function HomePage() {
         ))}
         <NoteCard id={"add"} title={""} date={""} isAdd={true} />
       </div>
+
     </div>
   );
 }
