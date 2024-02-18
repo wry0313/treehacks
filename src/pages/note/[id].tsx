@@ -16,8 +16,10 @@ export default function NotePage() {
           href="/"
           className="hover:underline text-white font-semibold fixed top-1 left-2"
         >
-
-          <a href="/" className="text-white font-semibold fixed top-1 left-2 mt-4">
+          <a
+            href="/"
+            className="text-white font-semibold fixed top-1 left-2 mt-4"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6 hover:opacity-75"
@@ -33,7 +35,6 @@ export default function NotePage() {
               />
             </svg>
           </a>
-
         </a>
         <div className="flex flex-col items-center  w-full text-white text-2xl mt-20 gap-y-10">
           <button
@@ -57,10 +58,12 @@ export default function NotePage() {
         </div>
       </div>
 
-
       {notes && (
         <div className="flex flex-col pl-10">
-          <p className="text-2xl font-semibold p-2 h-[50px] bg-gray-200"> {notes?.title}  </p>
+          <p className="text-2xl font-semibold p-2 h-[50px] bg-gray-200">
+            {" "}
+            {notes?.title}{" "}
+          </p>
           <div>
             {mode === "Upload" && (
               <div className="flex flex-col">
@@ -84,8 +87,6 @@ export default function NotePage() {
                 </div>
               </div>
             )}
-
-            
 
             {mode === "Upload" && (
               <div className="flex flex-col">
