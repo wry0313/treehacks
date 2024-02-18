@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SignInButton, SignOutButton } from "@clerk/clerk-react";
-import {
-  AuthLoading,
-  Authenticated,
-  Unauthenticated,
-  useConvexAuth,
-  useQuery,
-} from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useUser } from "@clerk/clerk-react";
 import { api } from "../../convex/_generated/api";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 export default function HomePage() {
   const { isAuthenticated } = useConvexAuth();
   const { user } = useUser();
@@ -93,26 +89,75 @@ export default function HomePage() {
       </div>
 
       <div className="grid grid-cols-3 gap-4 p-5">
-        {userNotes?.map(({_id, title, createdAt}) => (
-          <NoteCard id={_id} title={title} date={createdAt} />
+        {userNotes?.map(({ _id, title, createdAt }) => (
+          <NoteCard id={_id} title={title} date={createdAt} isAdd={false} />
         ))}
+        <NoteCard id={"add"} title={""} date={""} isAdd={true} />
       </div>
     </div>
   );
 }
 
-const NoteCard = ({ id, title, date }: { id: string,title: string; date: string }) => {
-  return (
-    <a  href={`/note/${id}`}
-    
-    className="cursor-pointer flex flex-col w-72 rounded-lg shadow-lg">
-      <div className="bg-gray-100 h-48 w-full rounded-t">
+const NoteCard = ({
+  id,
+  title,
+  date,
+  isAdd = false,
+}: {
+  id: string;
+  title: string;
+  date: string;
+  isAdd: boolean;
+}) => {
+  const navigate = useNavigate();
 
+  const insertNewNotes = useMutation(api.notes.insertNewNotes);
+  const { user } = useUser();
+  return (
+    <button
+      key={id}
+      onClick={() => {
+        if (isAdd) {
+          if (!user) {
+            toast.error("Please sign in to add a new note");
+            return;
+          }
+          insertNewNotes({ userId: user.id }).then((id) => {
+            toast.success("New note added");
+            navigate(`/note/${id}`);
+          });
+        } else {
+          navigate(`/note/${id}`);
+        }
+      }}
+      className="cursor-pointer flex flex-col w-72 rounded-lg shadow-lg"
+    >
+      <div className="bg-gray-100 h-48 w-full rounded-t">
+        {isAdd && (
+          <div className="flex justify-center items-center h-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-20 w-20 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
+            </svg>
+          </div>
+        )}
       </div>
       <div className="px-6 py-4 grow w-full bg-blue-500 rounded-b">
-        <div className="font-bold text-xl mb-2 text-white">{title}</div>
+        <div className="font-bold text-xl mb-2 text-white">
+          {isAdd ? "Add a new note" : title}
+        </div>
         <p className="text-gray-200 text-base">{date}</p>
       </div>
-    </a>
+    </button>
   );
 };
