@@ -14,7 +14,7 @@ TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
-def queryText(context = "You are an AI Assistant", input = "What is 1 + 1"):
+def queryText(input = "What is 1 + 1", context = "You are an AI Assistant"):
     client = OpenAI(api_key=TOGETHER_API_KEY,
     base_url='https://api.together.xyz',
     )
@@ -35,3 +35,6 @@ def queryText(context = "You are an AI Assistant", input = "What is 1 + 1"):
     )
 
     return chat_completion.choices[0].message.content
+
+
+print(queryText(input="Hello! whats your name"))
