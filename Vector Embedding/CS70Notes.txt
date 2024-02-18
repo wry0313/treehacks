@@ -1,0 +1,64 @@
+The Stable Matching Problem is analyzed using proof techniques to find a solution that matches jobs and candidates based on their preferences.
+
+The Propose-and-Reject algorithm (Gale-Shapley algorithm) is introduced as a simple, fast, and widely-used method to achieve stable matchings.
+
+The algorithm operates in discrete time "days," with jobs proposing to candidates and candidates either accepting ("maybe") or rejecting offers until no offers are rejected.
+
+The algorithm's termination results in stable matchings, where no pair would benefit from switching partners.
+
+Stability is defined as a key property, ensuring no job and candidate pair would prefer each other over their current matches.
+
+Analysis proves the algorithm always halts and produces stable matchings, leveraging the Improvement Lemma and well-ordering principle.
+
+The concept of optimality is explored, distinguishing between job/employer optimal and candidate optimal matchings, demonstrating the algorithm's job/employer optimality.
+
+Historical context is provided, including the use of the algorithm in the Residency Match program for medical graduates and hospitals, highlighting its real-world impact.
+
+The note discusses the implications of algorithm design on institutional structures and outcomes, reflecting on power dynamics and institutional changes in the National Residency Matching Program.
+
+Further reading suggests Gale and Shapley's original paper and a book by Gusfield and Irving for more on the Stable Marriage Problem and its developments
+
+Graph Basics: Introduction of undirected and directed graphs, with vertices and edges representing connections.
+
+Eulerian Tours: Conditions for the existence of a tour that visits each edge exactly once in a graph.
+
+Trees: Characterization of trees as connected, acyclic graphs, and properties such as the number of edges being one less than the number of vertices.
+
+Planar Graphs and Euler's Formula: Discussion on planar graphs, Euler's formula relating vertices, edges, and faces, and the concept of graph coloring.
+
+Hypercubes: Exploration of hypercubes as graphs representing n-dimensional cubes, with vertices connected based on differing by one bit.
+
+Connectivity and Path Finding: Detailed analysis of graph connectivity, including the concept of connected components and the importance of trees and hypercubes for efficient path finding and network design.
+
+RSA cryptography allows secure communication without prior sharing of private keys, using a public/private key pair for encryption and decryption.
+
+It's based on modular arithmetic and the difficulty of factoring large prime numbers, making it secure under current computational capabilities.
+
+The document outlines the RSA encryption and decryption processes, including generating public and private keys, and encrypting and decrypting messages.
+
+The security of RSA is dependent on the computational impracticality of factoring large numbers and determining original messages from encrypted ones without the private key.
+
+RSA's implementation and efficiency in practical applications are also discussed, emphasizing the feasibility of using this system for secure digital communication.
+
+Graph Basics: Introduction of undirected and directed graphs, with vertices and edges representing connections.
+
+Eulerian Tours: Conditions for the existence of a tour that visits each edge exactly once in a graph.
+
+Trees: Characterization of trees as connected, acyclic graphs, and properties such as the number of edges being one less than the number of vertices.
+
+Planar Graphs and Euler's Formula: Discussion on planar graphs, Euler's formula relating vertices, edges, and faces, and the concept of graph coloring.
+
+Hypercubes: Exploration of hypercubes as graphs representing n-dimensional cubes, with vertices connected based on differing by one bit.
+
+Connectivity and Path Finding: Detailed analysis of graph connectivity, including the concept of connected components and the importance of trees and hypercubes for efficient path finding and network design.
+
+Key Generation:
+
+Choose two large prime numbers p and q. Compute N = pq, which serves as the modulus for both the public and private keys. The size of N dictates the security of the system, with larger values being more secure but also slower to compute. Calculate φ(N) = (p-1)(q-1), which is used in determining the public and private keys. Choose an integer e such that 1 < e < φ(N) and e is coprime to φ(N), making e the public key exponent. Determine d as the modular multiplicative inverse of e modulo φ(N), meaning d is the private key exponent satisfying the equation de ≡ 1 (mod φ(N)).
+Encryption:
+
+The sender, Alice, takes the recipient's public key (N, e) and the message M, which has been converted into an integer m in the range 0 < m < N. Alice computes the ciphertext c using the equation c ≡ m^e (mod N).
+
+Decryption: The recipient, Bob, uses his private key d to compute m ≡ c^d (mod N). Since m is the original message, Bob successfully retrieves M from m.
+
+Security: The security of RSA relies on the difficulty of factoring the large number N back into its prime components p and q. Without the knowledge of p and q, an attacker cannot compute the private key d from the public key (N, e). RSA's encryption and decryption work because of the mathematical property that (m^e)^d ≡ m (mod N) for all messages m, assuming m < N.
