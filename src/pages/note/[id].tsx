@@ -101,10 +101,9 @@ export default function NotePage() {
                 ></iframe>
               </div>
             )}
-
                
             {mode === "Chatbot" && (
-              <div className="w-[40vw] h-[100vh]">
+              <div className="">
                 <ChatBot/>
               </div>
             )}
