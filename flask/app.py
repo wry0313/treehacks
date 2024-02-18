@@ -11,6 +11,7 @@ def hello_world():
 if __name__ == '__main__':
     app.run(debug=True)
 
+from urllib.parse import quote, unquote
 
 @app.route('/image_to_latex', methods=['POST'])
 def image_to_latex():
@@ -18,6 +19,7 @@ def image_to_latex():
     body = request.json
     image_url = body['image_url']
     noteId = body['noteId']
+    noteImageId = body['noteImageId']
     print(noteId)
     print(image_url)
     image_path = './tmp/image.jpg'
@@ -40,7 +42,7 @@ def image_to_latex():
     
     latext = ImageToLatex(image_path)
     print(latext)
-
+    remove_first_page_in_place("feedback.pdf")
     with open("feedback.pdf", "rb") as f:
         pdf_bytes = f.read()
         # No need for base64 encoding
@@ -48,7 +50,13 @@ def image_to_latex():
             "Content-Type": "application/pdf"
         }
         # Send the raw PDF bytes
-        response = requests.post("https://astute-cheetah-548.convex.site/uploadPdf?noteId=" + noteId, headers=header, data=pdf_bytes)
+            # santize the latex for the url
+        def sanitize_for_url(input_string):
+            return quote(input_string)
+
+        latext =  sanitize_for_url(latext)
+        response = requests.post("https://astute-cheetah-548.convex.site/uploadPdf?noteId=" + noteId + "&latextString=" + latext + "&noteImageId=" + noteImageId
+                                 , headers=header, data=pdf_bytes)
         print(response)
         return jsonify({"latex": latext, "feedback_pdf": base64.b64encode(pdf_bytes).decode('utf-8')}), 200
     # Return the LaTeX
@@ -247,6 +255,39 @@ def ImageToLatex(img_path):
 
     latex_to_pdf(feedback_latex, "/Users/gavinwang/CODE/treehacks/flask", "feedback.pdf")
     return extracted_latex
+
+import PyPDF2
+import os
+import tempfile
+
+def remove_first_page_in_place(pdf_file_path):
+    """
+    Remove the first page from a PDF file and save the changes back to the same file.
+
+    :param pdf_file_path: The path to the PDF file.
+    """
+    # Create a temporary file
+    with tempfile.TemporaryFile() as temp_file:
+        # Open the existing PDF
+        with open(pdf_file_path, 'rb') as file:
+            reader = PyPDF2.PdfReader(file) 
+            writer = PyPDF2.PdfWriter()
+
+            # Add all pages except the first to the writer object
+            for page_num in range(1, len(reader.pages)):
+                page = reader.pages[page_num]
+                writer.add_page(page)
+
+            # Write the modified PDF to the temporary file
+            writer.write(temp_file)
+            temp_file.seek(0)  # Go back to the beginning of the tempfile
+
+            # Overwrite the original file with the modified PDF
+            with open(pdf_file_path, 'wb') as output_file:
+                output_file.write(temp_file.read())
+
+    print(f"The first page has been removed. The changes are saved back to {pdf_file_path}")
+
 
 if __name__ == '__main__':
     app.run(debug=True)

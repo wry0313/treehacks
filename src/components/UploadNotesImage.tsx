@@ -92,7 +92,8 @@ export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
       }
       const { storageId } = json;
       // toast.success(`Upload successful: ${storageId}`);
-      mutateInsertNoteImage({ noteId: noteId, imageStorageId: storageId });
+      const id = await mutateInsertNoteImage({ noteId: noteId, imageStorageId: storageId });
+
       const imageUrl = await getImageUrl({ storageId });
       console.log(imageUrl);
       const res = await fetch(`http://127.0.0.1:5000/image_to_latex`, {
@@ -100,7 +101,7 @@ export default function UploadNotesImagePage({ noteId }: { noteId: string }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ image_url: imageUrl, noteId: noteId }),
+        body: JSON.stringify({ image_url: imageUrl, noteId: noteId, noteImageId: id }),
       });
       const resjson = await res.json();
       console.log(resjson);

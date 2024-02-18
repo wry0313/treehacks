@@ -1,8 +1,12 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { api } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 
 const http = httpRouter();
+function reverseSanitization(encodedString: string): string {
+  return decodeURIComponent(encodedString);
+}
 
 http.route({
   path: "/uploadPdf",
@@ -10,16 +14,25 @@ http.route({
   handler: httpAction(async (ctx, request) => {
     // Step 1: Store the file
     const noteId = new URL(request.url).searchParams.get("noteId");
-    if (!noteId) {
+    const latextString = new URL(request.url).searchParams.get("latextString");
+
+    const noteImageId = new URL(request.url).searchParams.get("noteImageId");
+    if (!noteId || !latextString || !noteImageId) {
       return new Response(null, { status: 469 });
     }
+    const latextStringDecoded = reverseSanitization(latextString);
     const blob = await request.blob();
     const storageId = await ctx.storage.store(blob);
+
+    await ctx.runMutation(api.noteImages.setStatusToComplete, {
+      noteImageId: noteImageId as Id<"noteImages">,
+    });
 
     // Step 2: Save the storage ID to the database via a mutation
     await ctx.runMutation(api.noteLatexPdf.insertLatexPdf, {
       latexpdfStorageId: storageId,
       noteId: noteId,
+      latextString: latextStringDecoded,
     });
 
     // Step 3: Return a response with the correct CORS headers
@@ -33,7 +46,6 @@ http.route({
     });
   }),
 });
-
 
 // Pre-flight request for /sendImage
 http.route({

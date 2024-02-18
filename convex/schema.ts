@@ -18,10 +18,12 @@ export default defineSchema({
   }),
   noteImages: defineTable({
     noteId: v.string(),
-    imageStorageId: v.id("_storage")
-  }).index("by_noteId", ["noteId"]),
+    imageStorageId: v.id("_storage"),
+    processingStatus: v.string(),
+  }).index("by_noteId", ["noteId"]).index("by_imageStorageId", ["imageStorageId"]),
   noteLatexPdf: defineTable({
     noteId: v.string(),
-    latexStorageId: v.id("_storage")
+    latexStorageId: v.id("_storage"),
+    latextString: v.string(),
   }).index("by_noteId", ["noteId"]),
 });

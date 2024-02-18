@@ -7,7 +7,9 @@ import ChatBot from "../../components/ChatBot";
 export default function NotePage() {
   const { id } = useParams("/note/:id" as never);
   const notes = useQuery(api.notes.getNoteById, { noteId: id });
-  const images = useQuery(api.noteImages.getNoteImagesByNoteId, { noteId: id });
+  const images = useQuery(api.noteImages.getNoteImageUrlAndStatusByNoteId, {
+    noteId: id,
+  });
   const pdfs = useQuery(api.noteLatexPdf.getLatexPdfByNoteId, { noteId: id });
   console.log(pdfs);
   const [mode, setMode] = useState<"Upload" | "Feedback" | "Chatbot">("Upload");
@@ -77,42 +79,70 @@ export default function NotePage() {
                   <div className="flex flex-row gap-x-2 overflow-scroll flex-grow w-[190%]">
                     {images &&
                       images.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image as string}
-                          alt="Note Image"
-                          style={{ objectFit: "contain" }}
-                          height={500}
-                          width={200}
-                        />
+                        <div className="flex flex-col gap-y-2">
+                          <img
+                            key={index}
+                            src={image.url as string}
+                            alt="Note Image"
+                            style={{ objectFit: "contain" }}
+                            height={500}
+                            width={200}
+                          />
+                          <p>
+                            {image.status === "complete" ? (
+                              <div className="flex flex-row gap-x-1">
+                                <CheckIcon />
+                                <p className="text-green-700">Complete</p>
+                              </div>
+                            ) : (
+                              "Processing"
+                            )}
+                          </p>
+                        </div>
                       ))}
                   </div>
                 </div>
               </div>
             )}
 
-            {mode === "Feedback" && (
-              <div className="w-[40vw] h-[100vh]">
-                {/* <iframe
-                  src="https://arxiv.org/pdf/2402.09859.pdf"
-                  width="100%"
-                  height="100%"
-                ></iframe> */}
-                {pdfs &&
-                  pdfs.map((pdf, index) => (
-                    <iframe
-                      key={index}
-                      src={pdf as string}
-                      width="100%"
-                      height="100%"
-                    ></iframe>
-                  ))}
-              </div>
-            )}
-               
+{mode === "Feedback" && (
+  <div className="flex w-full h-[80vh]">
+    <div className="flex-grow">
+      {pdfs && pdfs.length > 0 ? (
+        pdfs.map((pdf, index) => (
+          <iframe
+            key={index}
+            src={pdf as string}
+            style={{ width: "50vw", height: "100%" }}
+            frameBorder="0"
+            title={`PDF document ${index + 1}`}
+          ></iframe>
+        ))
+      ) : images && images.length > 0 ? (
+        <p>Image is processing...</p>
+      ) : (
+        <p>No PDFs uploaded for this note</p>
+      )}
+    </div>
+    {images && images.length > 0 && (
+      <div className="flex-grow overflow-auto">
+        {images.map((image, index) => (
+          <img
+            key={index}
+            src={image.url as string}
+            alt="Note Image"
+            style={{ objectFit: "contain", width: "50vw", height: "auto" }}
+          />
+        ))}
+      </div>
+    )}
+  </div>
+)}
+
+
             {mode === "Chatbot" && (
               <div className="">
-                <ChatBot/>
+                <ChatBot />
               </div>
             )}
           </div>
@@ -121,3 +151,20 @@ export default function NotePage() {
     </div>
   );
 }
+
+const CheckIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={2}
+    stroke="green"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+    />
+  </svg>
+);

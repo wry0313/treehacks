@@ -6,11 +6,12 @@ import { mutation, query } from "./_generated/server";
 // });
 
 export const insertLatexPdf = mutation({
-  args: { noteId: v.string(), latexpdfStorageId: v.id("_storage") },
+  args: { noteId: v.string(), latexpdfStorageId: v.id("_storage"), latextString: v.string()},
   handler: async (ctx, args) => {
     const id = await ctx.db.insert("noteLatexPdf", {
       noteId: args.noteId,
       latexStorageId: args.latexpdfStorageId,
+      latextString: args.latextString,
     });
     return id;
   },
