@@ -10,10 +10,10 @@ import numpy as np
 from tempfile import NamedTemporaryFile
 from openai import OpenAI
 
-from convex import ConvexClient
-load_dotenv(".env.local")
-client = ConvexClient(os.getenv("CONVEX_URL"))
-print(client.query("tasks:get"))
+# from convex import ConvexClient
+# load_dotenv(".env.local")
+# client = ConvexClient(os.getenv("CONVEX_URL"))
+# print(client.query("tasks:get"))
 
 
 load_dotenv()
@@ -30,17 +30,20 @@ def preprocess_image_for_ocr(image_path):
     # Apply Gaussian Blur to reduce noise
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     
+    cv2.imwrite("BBB.jpg", blur)
+    
     # Apply a sharpening kernel
     sharpen_kernel = np.array([[-1, -1, -1], 
                                [-1, 9, -1], 
                                [-1, -1, -1]])
     sharpened = cv2.filter2D(blur, -1, sharpen_kernel)
     
+    
     # Optionally, apply edge detection (e.g., Canny) to further enhance edges for OCR
     edges = cv2.Canny(sharpened, 100, 200)
     
     # Save or return the processed image
-    processed_image_path = 'processed_image.jpg'
+    processed_image_path = 'CCC.jpg'
     cv2.imwrite(processed_image_path, edges)
     
     return processed_image_path
@@ -189,13 +192,13 @@ def ImageToLatex(img_path):
 
     feedback_latex = generate_text(feedback_prompt + extracted_latex)
 
-    latex_to_pdf(feedback_latex, "/Users/gavinwang/Documents/treehacks", "feedback.pdf")
+    latex_to_pdf(feedback_latex, "/Users/timothygao/Documents/treehacks", "feedback.pdf")
     return extracted_latex
 
 # image_path = 'lavik_test.png'
 # image_path = 'tim_test.png'
-# image_path = 'small_test.png'
-image_path = 'table_test.jpg'
+image_path = 'DEMO.png'
+# image_path = 'table_test.jpg'
 
 final_string = ImageToLatex(image_path)
 print(final_string)

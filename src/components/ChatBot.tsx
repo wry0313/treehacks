@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState, useEffect, useMemo} from "react";
 import { TogetherAPIKey } from "./config"; // Import your Together.ai API key securely
 import { useQuery } from "convex/react";
 import { Id } from "../../convex/_generated/dataModel";
@@ -10,9 +10,13 @@ type Message = {
   sender: "user" | "bot";
 };
 
-const ChatbotComponent = ({ id }: { id: Id<"notes"> }) => {
+const ChatbotComponent = () => {
+  const initialGreeting = "Hi! I'm here to answer any questions you have about this note.";
+  const [contextMessage, setContext] = useState("You are a tutor, answering questions about a student's notes. ");
   const [currentMessage, setCurrentMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 0, text: initialGreeting, sender: "bot" } // Initial greeting message from the bot
+  ]);
   const [isLoading, setIsLoading] = useState(false);
 
   const latex = useQuery(api.noteLatexPdf.getStringLatexByNoteId, {
@@ -24,6 +28,15 @@ const ChatbotComponent = ({ id }: { id: Id<"notes"> }) => {
     return latex?.map((latex) => latex.latextString).join(" ");
   }, [latex]);
   console.log(concatLatexString);
+  useEffect(() => {
+    // Update context with the AI's initial greeting if you want it to be part of the conversation context
+    updateContextWithMessage(initialGreeting, "bot");
+  }, []);
+
+  const updateContextWithMessage = (text: string, sender: "user" | "bot") => {
+    const newContextPart = `\n${sender === "user" ? "User" : "Bot"}: ${text}`;
+    setContext((prevContext) => prevContext + newContextPart);
+  };
 
   const fetchMessage = async (inputText: string): Promise<string> => {
     const url = "https://api.together.xyz/v1/chat/completions";
@@ -47,7 +60,7 @@ const ChatbotComponent = ({ id }: { id: Id<"notes"> }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TogetherAPIKey}`, // Use your secure API key
+        Authorization: `Bearer ${TogetherAPIKey}`,
       },
       body: JSON.stringify(data),
     };
@@ -57,7 +70,7 @@ const ChatbotComponent = ({ id }: { id: Id<"notes"> }) => {
       const result = await response.json();
       const message = result.choices[0]["message"]["content"];
 
-      console.log(message);
+      updateContextWithMessage(message, "bot");
 
       return message;
     } catch (error) {
@@ -75,15 +88,12 @@ const ChatbotComponent = ({ id }: { id: Id<"notes"> }) => {
       sender: "user",
     };
 
-    // Add user message to conversation
     setMessages((prev) => [...prev, userMessage]);
+    updateContextWithMessage(currentMessage, "user");
 
     setIsLoading(true);
     try {
-      // Substitute this URL with your API endpoint
       const data = await fetchMessage(currentMessage);
-
-      // const data = await response.json();
 
       const botMessage: Message = {
         id: messages.length + 1,
@@ -91,7 +101,6 @@ const ChatbotComponent = ({ id }: { id: Id<"notes"> }) => {
         sender: "bot",
       };
 
-      // Add bot response to conversation
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -99,12 +108,12 @@ const ChatbotComponent = ({ id }: { id: Id<"notes"> }) => {
       setIsLoading(false);
     }
 
-    // Clear input field
     setCurrentMessage("");
   };
 
   return (
     <div className="flex flex-col h-screen">
+      {<div className="flex flex-col h-screen">
       <div className="flex-grow overflow-auto p-4">
         <div className="flex flex-col items-center h-full">
           {messages.map((message) => (
@@ -134,6 +143,7 @@ const ChatbotComponent = ({ id }: { id: Id<"notes"> }) => {
           Send
         </button>
       </div>
+    </div>}
     </div>
   );
 };

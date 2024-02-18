@@ -57,7 +57,7 @@ const Graph: React.FC<GraphProps> = ({ adjacencyList }) => {
     if (isZoomed){
         console.log("zoomed click");
     }else{
-        setIsZoomed(true);
+        // setIsZoomed(true);
         // Calculate nodes within two degrees of separation
         const nodesWithinTwoDegrees = new Set<string>([node.id]);
         const linksWithinTwoDegrees: Link[] = [];
